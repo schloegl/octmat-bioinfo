@@ -1,0 +1,16 @@
+Bioinfo >> Bioinformatics package
+Import filter
+   fastaread
+   fastqread
+Graph utilities
+   graphtraverse
+Utility functions
+   aminolookup
+   cleave
+   seqreverse
+Conversion tools
+   aa2int
+   int2aa
+Test suites
+   test_graphtraverse
+
