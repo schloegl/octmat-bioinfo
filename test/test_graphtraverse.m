@@ -1,3 +1,23 @@
+% TEST_GRAPHTRAVERSE tests the output of the function GRAPHTRAVERSE
+%   and compares it with known output from Matlab.
+
+% Copyright (C) 2017 Alois Schloegl
+%
+% This software is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 3 of the License, or (at
+% your option) any later version.
+%
+% This software is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this software; see the file COPYING.  If not, see
+% <http://www.gnu.org/licenses/>.
+
+
 G2 = sparse(4,5,1,10,10);
 G3 = sparse([1,1,1,2,2,3,6],[2,3,5,4,6,7,6],true,7,7); G3=G3+G3';
 DG = sparse([1 2 3 4 5 5 5 6 7 8 8 9], [2 4 1 5 3 6 7 9 8 1 10 2], true, 10, 10);

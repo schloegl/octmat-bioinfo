@@ -1,6 +1,7 @@
 function [disc, pred, closed] = graphtraverse(G, S, varargin)
-%% function [disc, pred, closed] = graphtraverse(G, S, varargin)
 % GRAPHTRAVERSE traverses a graph by following adjacent nodes
+%   by implementing the ideas according to the methods as described
+%   in [1-3].
 %
 % Usage:
 %	[disc, pred, closed] = graphtraverse(G, S)
@@ -8,26 +9,29 @@ function [disc, pred, closed] = graphtraverse(G, S, varargin)
 %	[...] = graphtraverse(..., 'Directed', DirectedValue, ...)
 %	[...] = graphtraverse(..., 'Method', MethodValue, ...)
 %
-%  Input:
+% Input:
 %	G	NxN sparse matrix, edges are indicated by non-zero entries
 %	S	starting node number
 %       MethodValue:
 %		'DFS' Depth-first-search (default) 
 %               'BFS' Breadth-first-search
-%	DepthValue	depth of search, (default is Inf)	
-%	DirectedValue
+%	DepthValue:	depth of search, (default is Inf)	
+%	DirectedValue:
 %		True: (default) G is a directed graph
 %		False: G undirected graph, (upper triangle is ignored) 
 %
-%  Output:
+% Output:
 %	disc 	vector containing node indices in the order of their discovery
 %	pred	predecessor node indices
 %       closed	vector of node indices in closing order
+%   NOTE: For the DFS method, the result of "closed"
+%        can differ from the Matlab version - most likely because
+%        a non-recursive algorithm is used [1].
 %
 % References:
-%   https://en.wikipedia.org/wiki/Depth-first_search
-%   https://en.wikipedia.org/wiki/Breadth-first_search
-%   https://en.wikipedia.org/wiki/Tree_traversal
+% [1] https://en.wikipedia.org/wiki/Depth-first_search
+% [2] https://en.wikipedia.org/wiki/Breadth-first_search
+% [3] https://en.wikipedia.org/wiki/Tree_traversal
 
 % Copyright (C) 2017 Alois Schloegl, IST Austria
 %
@@ -72,12 +76,6 @@ while (k <= length(varargin))
 	end
 end
 
-if ~exist('tmp_GraphTraverseLocal_pred','var') || isempty(whos('global','tmp_GraphTraverseLocal_pred'))
-%if ~isglobal('tmp_GraphTraverseLocal_pred')
-	global tmp_GraphTraverseLocal_pred
-	tmp_GraphTraverseLocal_pred=repmat(NaN,1,max(size(G)));
-end
-
 if ~DirectedValue
 	G=tril(G);	
 end
@@ -87,37 +85,37 @@ if ~issparse(G)
 end
 
 if strcmp(Method,'BFS')
-	disc=S;
-	closed=S;
-	pred=repmat(NaN,1,max(size(G)));
+	disc    = S;
+	closed  = S;
+	pred    = repmat(NaN,1,max(size(G)));
 	pred(S) = 0;
 
 	P = 0;
-	Q = S;	% fifo, queue 
 	D = DepthValue;
-	while ~isempty(Q) %&& (D(1)>=0)
-		s = Q(1); Q = Q(2:end);
-		p = P(1); P = P(2:end);
-		d = D(1); D = D(2:end);
+	while ~isempty(S)
+		% get element from fifo queue
+		s = S(end); S(end) = [];
+		p = P(end); P(end) = [];
+		d = D(end); D(end) = [];
 		if (d>0)
-			if ~DirectedValue
+			if ~DirectedValue,
 				x = find(G(:,s)' | G(s,:));
 			else
 				x = find(G(s,:));
 			end
-			for k = x
+			for k = x,
 				if isnan(pred(k))
 					disc    = [disc, k];
 					closed  = [closed,k];
 					pred(k) = s;
 
-					Q  = [Q, k];
-					D  = [D, d-1];
-					P  = [P, s];
+					% push element into queue
+					S  = [k,   S];
+					D  = [d-1, D];
+					P  = [s,   P];
 				end
 			end	
 		end
-		
 	end
 	return
 
@@ -150,18 +148,14 @@ elseif strcmp(Method,'DFS')
 			P = [P, repmat(s,   1, length(x))];
 		end
 	end
-	if nargout>2
-%		warning('The third output argument uses a different order than Matlab')
+	if nargout>2,
+		warning('The third output argument uses a different order than Matlab')
 	end; 
 	return
 
 else
 	error('Method not supported')	
 end
-
-return 
-
-
 
 %dgMat = sparse(relMatrix); % sparse matrix representing the directed graph
 %[visitOrder, predVec, ~] = graphtraverse(dgMat,IdxA,'method','bfs');
@@ -174,12 +168,6 @@ return
 %
 %! [order,p,c] = graphtraverse(DG,[4],'method','BFS') 
 %    order =[ 4     5     3     6     7     1     9     8     2    10]
-%!
-%!
-%!
-%!
-%!
-%!
 %!
 %!
 
