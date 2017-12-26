@@ -2,6 +2,8 @@ Bioinfo >> Bioinformatics package
 Import filter
    fastaread
    fastqread
+   getpdb
+   pdbread
 Graph utilities
    graphtraverse
 Utility functions
