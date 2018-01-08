@@ -1,11 +1,10 @@
-2017-12-26:
 
-- Alois Schloegl takes the role as maintainer of the bioinfo package.
-    As discussed, this package will be maintained under a coding
+2018-01-08: Release 0.2.1
+
+- The bioinfo package is maintained under a coding
     style that is compatible to Octave AND Matlab. Both, Octave
     and Matlab, are target platforms. If the code does not run
     correctly on any of the target platforms, it is considered a bug.
-  http://lists.gnu.org/archive/html/octave-maintainers/2017-12/msg00046.html
 
 
 2017-12-13: Release 0.2.0

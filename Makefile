@@ -23,7 +23,7 @@ version := $(shell $(GREP) "^Version: " DESCRIPTION | $(CUT) -f2 -d" ")
 
 ## This are the paths that will be created for the releases. Using
 ## $(realpath ...) avoids problems with symlinks.
-target_dir       := $(realpath .)/target
+target_dir       := target
 release_dir      := $(target_dir)/$(package)-$(version)
 release_tarball  := $(target_dir)/$(package)-$(version).tar.gz
 html_dir         := $(target_dir)/$(package)-html

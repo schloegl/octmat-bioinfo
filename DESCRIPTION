@@ -1,6 +1,6 @@
 Name: bioinfo
-Version: 0.2.0
-Date: 2017-12-26
+Version: 0.2.1
+Date: 2018-01-08
 Author: Bill Denney <bill@denney.ws>
 Maintainer: Alois Schloegl <alois.schloegl@gmail.com>
 Title: Bioinformatics
@@ -8,5 +8,6 @@ Description: Bioinformatics manipulation
 Categories: Bioinformatics
 Depends: octave (>= 3.0.0)
 License: GPL version 3 or later
-Url: http://octave.sf.net
+Url: https://github.com/schloegl/octmat-bioinfo
+
 
