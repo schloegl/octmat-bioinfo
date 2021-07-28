@@ -116,7 +116,7 @@ function result = aminolookup (varargin)
       %% this is an extension of the matlab options
       searchtype = 'integer';
     elseif ischar (varargin{1})
-      if ((mod (numel (varargin{1}), 3) == 0) && (find (upper (varargin{1})) == 1:3:numel (varargin{1})))
+      if ((mod (numel (varargin{1}), 3) == 0) && (find (isupper (varargin{1})) == 1:3:numel (varargin{1})))
         %% if the number of characters is divisible by 3 and exactly
         %% every third character is upper case
         searchtype = 'abbreviation';
