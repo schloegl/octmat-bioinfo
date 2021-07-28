@@ -21,14 +21,18 @@ package := $(shell $(GREP) "^Name: " DESCRIPTION | $(CUT) -f2 -d" " | \
 $(TR) '[:upper:]' '[:lower:]')
 version := $(shell $(GREP) "^Version: " DESCRIPTION | $(CUT) -f2 -d" ")
 
-## This are the paths that will be created for the releases. Using
-## $(realpath ...) avoids problems with symlinks.
+## These are the paths that will be created for the releases.
 target_dir       := target
 release_dir      := $(target_dir)/$(package)-$(version)
 release_tarball  := $(target_dir)/$(package)-$(version).tar.gz
 html_dir         := $(target_dir)/$(package)-html
 html_tarball     := $(target_dir)/$(package)-html.tar.gz
-installation_dir := $(target_dir)/.installation
+## Using $(realpath ...) avoids problems with symlinks due to bug
+## #50994 in Octaves scripts/pkg/private/install.m.  But at least the
+## release directory above is needed in the relative form, for 'git
+## archive --format=tar --prefix=$(release_dir).
+real_target_dir  := $(realpath .)/$(target_dir)
+installation_dir := $(real_target_dir)/.installation
 package_list     := $(installation_dir)/.octave_packages
 install_stamp    := $(installation_dir)/.install_stamp
 
@@ -37,7 +41,7 @@ install_stamp    := $(installation_dir)/.install_stamp
 ifndef OCTAVE
 OCTAVE := octave
 endif
-OCTAVE := $(OCTAVE) --no-gui --silent --no-history --norc
+OCTAVE := $(OCTAVE) --no-gui --silent --norc
 MKOCTFILE ?= mkoctfile
 
 ## Command used to set permissions before creating tarballs
@@ -209,9 +213,13 @@ doctest: $(install_stamp)
 ## Test package.
 octave_test_commands = \
 ' dirs = {"inst", "src"}; \
-  dirs(cellfun (@ (x) ! isdir (x), dirs)) = []; \
+  dirs(cellfun (@ (x) isempty (a = stat (x)) || ! S_ISDIR (a.mode), dirs)) = []; \
   if (isempty (dirs)) error ("no \"inst\" or \"src\" directory"); exit (1); \
-    else __run_test_suite__ (dirs, {}); endif '
+  else \
+    dirs = \
+    cellfun (@ (x) canonicalize_file_name (x), dirs, "UniformOutput", false); \
+    __run_test_suite__ (dirs, {}); \
+  endif '
 ## the following works, too, but provides no overall summary output as
 ## __run_test_suite__ does:
 ##

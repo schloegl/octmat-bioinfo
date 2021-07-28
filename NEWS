@@ -1,5 +1,11 @@
+2021-07-28: Release 0.2.2
 
-2018-01-08: Release 0.2.1
+- <NEW> GETPDB, PDBREAD, and GRAPHTRAVERSE added
+
+- aminolookup: bug fix
+
+- update Makefile for Octave packaging to the
+  lastest version from octave-forge
 
 - The bioinfo package is maintained under a coding
     style that is compatible to Octave AND Matlab. Both, Octave
