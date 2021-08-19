@@ -1,20 +1,20 @@
 function [H,S,Q] = fastqread(filename,varargin)
-% FASTQREAD reads fastq data 
-%  
-% Usage: 
+% FASTQREAD reads fastq data
+%
+% Usage:
 %	FASTQDATA = fastqread(filename)
 %	... = fastqread(..., 'TrimHeaders', TrimHeadersValue, ...)
 %	... = fastqread(..., 'HeaderOnly', HeaderOnlyValue, ...)
 %	... = fastqread(..., 'Blockread', BlockreadValue, ...)
 %	[headers, seqs, quality] = fastqread(...)
-%  
-%    TrimHeadersValue: default 0 (false), if it is non-zero, 
+%
+%    TrimHeadersValue: default 0 (false), if it is non-zero,
 %	header strings are truncated at 1st white space character (<tab> or <space>)
-%    HeaderOnly: default 0 (false), 
+%    HeaderOnly: default 0 (false),
 %       if it is non-zero, seqs and quality are not reported
 %    BlockreadValue: default [], reads all blocks
 %       in case of a scalar N, only N-th block is returned
-%       in case of [N1,N2], all blocks from N1:N2 are returned. 
+%       in case of [N1,N2], all blocks from N1:N2 are returned.
 %       N2 can be infinite, than all blocks from N1 to the end are read
 
 % This software is free software; you can redistribute it and/or modify it
@@ -56,12 +56,11 @@ BLKNO=0;
 
 fid=fopen(filename,'r');
 while (~feof(fid))
-	STATE
-	LINE = strtrim(fgetl(fid))
+	LINE = strtrim(fgetl(fid));
 	LINENO=LINENO+1;
 
 	if isempty(LINE) continue; end;
-	
+
 	switch (STATE)
 	case {1}
 		h=[];
@@ -94,9 +93,8 @@ while (~feof(fid))
 	 	q=LINE;
 	 	BLKNO=BLKNO+1;
 		STATE=1;
-		h
 		if ( isempty(flag.Blockread) ||
-		     ( (flag.Blockread(1)<=BLKNO) && (BLKNO<=flag.Blockread(2)) ) )  
+		     ( (flag.Blockread(1)<=BLKNO) && (BLKNO<=flag.Blockread(2)) ) )
 		 	if (flag.HeaderOnly)
 				H{end+1}=h;
 			elseif (nargout>1)
@@ -104,14 +102,14 @@ while (~feof(fid))
 				S{end+1}=s;
 				Q{end+1}=q;
 			else
-				x.Header=h;	
-				x.Sequence=s;	
-				x.Quality=q;	
+				x.Header=h;
+				x.Sequence=s;
+				x.Quality=q;
 				H{end+1}=x;
-			end;			
+			end;
 		end;
-	end		
-end; 
+	end
+end;
 fclose(fid);
 
 
