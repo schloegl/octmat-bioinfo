@@ -45,7 +45,11 @@ while (k <= length(varargin))
 	end
 end
 
-fid = fopen(ToFileValue,'rz');
+if exist('OCTAVE_VERSION','builtin')
+	fid = fopen(ToFileValue,'rz');
+else
+        fid = fopen(ToFileValue,'r');
+end
 
 R.Title          = char([]);
 R.Authors        = char([]);
@@ -203,7 +207,7 @@ while ~feof(fid)
 		Atom.AtomNameStruct.chemSymbol = strtrim(line(13:14));
 		Atom.AtomNameStruct.remoteInd  = line(15);
 		Atom.AtomNameStruct.branch     = strtrim(line(16));
- 		R.Model(ModelSerialNo).Atom(end+1) = Atom;
+		R.Model(ModelSerialNo).Atom{end+1} = Atom;
 
 	case 'CISPEP'	
 	case 'CONECT'	
@@ -246,7 +250,7 @@ while ~feof(fid)
 		HetAtom.AtomNameStruct.chemSymbol = strtrim(line(13:14));
 		HetAtom.AtomNameStruct.remoteInd  = line(15);
 		HetAtom.AtomNameStruct.branch     = strtrim(line(16));
-		R.Model(ModelSerialNo).HeterogenAtom(end+1) = HetAtom;
+		R.Model(ModelSerialNo).HeterogenAtom{end+1} = HetAtom;
 
 	case 'LINK  '	
 	case 'MODRES'
@@ -280,7 +284,7 @@ while ~feof(fid)
 				R.HeterogenName(ix).hetID    = hetID;
 				R.HeterogenName(ix).ChemName = tok;
 			else
-				R.HeterogenName(ix).ChemName = [R.HeterogenName(ix).ChemName; tok];
+				R.HeterogenName(ix).ChemName = strvcat(R.HeterogenName(ix).ChemName, tok);
 			end
 		end
 	case 'HETSYN'	
@@ -331,7 +335,7 @@ while ~feof(fid)
 		Terminal.chainID  = line(22);
 		Terminal.resSeq   = str2double(line(23:26));
 		Terminal.iCode    = strtrim(line(27));
- 		R.Model(ModelSerialNo).Terminal(end+1) = Terminal;
+		R.Model(ModelSerialNo).Terminal{end+1} = Terminal;
 
 	% other
 	case 'JRNL  '	
@@ -339,7 +343,7 @@ while ~feof(fid)
 		
 	otherwise
 		[tok2, tok3] = strtok(tok);
-		if all(isdigit(tok2))
+		if all(isstrprop(tok2,'digit'))
 			value = [value;tok3];
 		else
 			value = tok;		

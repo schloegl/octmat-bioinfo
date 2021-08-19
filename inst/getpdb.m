@@ -52,13 +52,21 @@ while (k <= length(varargin))
 end
 
 if isempty(ToFileValue)
+if exist('OCTAVE_VERSION','builtin')
 	ToFileValue=[PDBid,'.pdb.gz'];
+else
+	ToFileValue=[PDBid,'.pdb'];
+end
 end
 
 %%% Download file 
 url=sprintf('https://files.rcsb.org/download/%s.pdb.gz',PDBid);	
 if ~exist(ToFileValue,'file')
-	urlwrite(url,ToFileValue)
+if exist('OCTAVE_VERSION','builtin')
+	urlwrite(url,ToFileValue);
+else
+	gunzip(url);
+end
 end
 
 R = pdbread(ToFileValue);
